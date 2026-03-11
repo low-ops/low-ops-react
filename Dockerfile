@@ -22,4 +22,4 @@ COPY --from=build /app/nginx.conf /etc/nginx/nginx.conf
 #COPY certificate.cer /etc/nginx/ssl/certificate.cer
 #COPY certificate.key /etc/nginx/ssl/certificate.key
 
-EXPOSE 80
+EXPOSE 8000
