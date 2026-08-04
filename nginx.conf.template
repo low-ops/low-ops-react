@@ -1,0 +1,51 @@
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format json_combined escape=json
+        '{'
+        '"timestamp":"$time_iso8601",'
+        '"level":"info",'
+        '"message":"$request_method $uri $status",'
+        '"method":"$request_method",'
+        '"path":"$uri",'
+        '"status":$status,'
+        '"request_time":$request_time,'
+        '"remote_addr":"$remote_addr",'
+        '"user_agent":"$http_user_agent"'
+        '}';
+
+    access_log /dev/stdout json_combined;
+    error_log /dev/stderr warn;
+
+    server {
+        listen ${PORT};
+        root /usr/share/nginx/html;
+        index index.html;
+
+        location = /ready {
+            add_header Content-Type text/plain;
+            return 200 'ok';
+        }
+
+        location ~* \.(?:js|css|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot|webp)$ {
+            expires 1y;
+            add_header Cache-Control "public, max-age=31536000, immutable";
+            try_files $uri =404;
+        }
+
+        location = /index.html {
+            add_header Cache-Control "no-store, no-cache, must-revalidate";
+            try_files $uri =404;
+        }
+
+        location / {
+            add_header Cache-Control "no-store, no-cache, must-revalidate";
+            try_files $uri $uri/ /index.html;
+        }
+    }
+}

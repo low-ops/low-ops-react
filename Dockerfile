@@ -3,23 +3,22 @@ FROM node:22.22 AS build
 WORKDIR /app
 
 COPY package*.json ./
-COPY nginx.conf ./
-
 RUN npm ci
 
 COPY . .
-
 RUN npm run build
 
 FROM nginx:alpine
-RUN mkdir -p /usr/share/nginx/html/
+
+RUN apk add --no-cache gettext \
+    && mkdir -p /usr/share/nginx/html/
+
 COPY --from=build /app/dist/ /usr/share/nginx/html/
-COPY --from=build /app/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf.template /etc/nginx/nginx.conf.template
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-# Copy Nginx configuration file
-
-# Copy SSL certificate and key to a secure location in the container
-#COPY certificate.cer /etc/nginx/ssl/certificate.cer
-#COPY certificate.key /etc/nginx/ssl/certificate.key
-
+ENV PORT=8000
 EXPOSE 8000
+
+ENTRYPOINT ["/docker-entrypoint.sh"]

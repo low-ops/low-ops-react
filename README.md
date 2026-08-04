@@ -5,29 +5,23 @@
   <img src="./public/react-logo.svg" height="50" width="60" alt="React logo" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1)"/>
 </p>
 
-This template provides a Boardflow-style React starting point with mock Kanban data. It includes:
+Boardflow-style React starter with mock Kanban data.
 
 - **React 19** + **TypeScript** + **Vite**
 - **Tailwind CSS** and lightweight UI primitives
-- **React Router** and an in-memory boards/tasks context
-- Drag-and-drop columns with **dnd-kit**
+- In-memory boards/tasks context + **dnd-kit**
 
-## Getting Started
-
-1. Clone the repository:
-
-```bash
-git clone {repository-url}
-```
-
-2. Install dependencies:
+## Local development
 
 ```bash
 npm install
-```
-
-3. Start the development server:
-
-```bash
 npm start
 ```
+
+## Docker
+
+```bash
+docker compose up --build
+```
+
+App listens on `PORT` (default `8000`). Health check: `GET /ready`. HTML is served with no-cache headers.
